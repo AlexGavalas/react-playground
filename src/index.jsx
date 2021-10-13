@@ -1,7 +1,5 @@
-import { Component } from 'react';
+import { Component, useState } from 'react';
 import { render } from 'react-dom';
-
-import { useRxStore } from './rx-store';
 
 const styles = {
     alignItems: 'center',
@@ -40,12 +38,14 @@ class ErrorBoundary extends Component {
 }
 
 const Wrapper = () => {
-    const r = useRxStore();
+    const [count, setCount] = useState(0);
 
-    // throw new Error('Hey');
-    // console.log(r);
-
-    return <div style={styles}>{JSON.stringify(r)}</div>;
+    return (
+        <div style={styles}>
+            Testing {count}
+            <button onClick={() => setCount(count + 1)}>Add one</button>
+        </div>
+    );
 };
 
 render(
