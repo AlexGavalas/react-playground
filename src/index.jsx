@@ -10,6 +10,7 @@ const styles = {
     height: '100vh',
 };
 
+// eslint-disable-next-line no-unused-vars
 class ErrorBoundary extends Component {
     state = { hasError: false };
 
@@ -37,20 +38,83 @@ class ErrorBoundary extends Component {
     }
 }
 
+import axios from 'axios';
+
 const Wrapper = () => {
     const [count, setCount] = useState(0);
 
+    const { data = [] } = useQuery('items', async () => {
+        const { data } = await axios.get('http://localhost:3000/items');
+        return data;
+    });
+
+    const { data: data2 } = useQuery(
+        'items 2',
+        async () => {
+            const { data: d } = await axios.get(
+                `http://localhost:3000/items?id=${data[0].id}`,
+            );
+
+            return d;
+        },
+        {
+            enabled: !!data.length,
+        },
+    );
+
     return (
         <div style={styles}>
-            Testing {count}
+            {data.length > 0 && <div data-testid="1">{data.length}</div>}
+            {data2 && <div data-testid="2">test {data2.id}</div>}
             <button onClick={() => setCount(count + 1)}>Add one</button>
         </div>
     );
 };
 
-render(
-    <ErrorBoundary>
-        <Wrapper />
-    </ErrorBoundary>,
-    document.getElementById('root'),
+import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
+import { ApiProvider } from '@reduxjs/toolkit/query/react';
+import { itemsAPI } from './redux-store';
+
+const client = new QueryClient();
+
+export const App = () => {
+    return (
+        <QueryClientProvider client={client}>
+            <Wrapper />
+        </QueryClientProvider>
+    );
+};
+
+const Item = ({ item }) => {
+    const [t, setT] = useState(item.title);
+    const [updateOne] = itemsAPI.useUpdateOneMutation();
+
+    return (
+        <div>
+            <input value={t} onChange={(e) => setT(e.target.value)} />
+            <button onClick={() => updateOne({ ...item, title: t })}>
+                Save
+            </button>
+        </div>
+    );
+};
+
+const RTKAppDemo = () => {
+    const { data: items = [] } = itemsAPI.useGetAllQuery();
+
+    return (
+        <div style={styles}>
+            {items.map((item) => {
+                return <Item item={item} key={item.id} />;
+            })}
+        </div>
+    );
+};
+
+const RTKApp = () => (
+    <ApiProvider api={itemsAPI}>
+        <RTKAppDemo />
+    </ApiProvider>
 );
+
+render(<RTKApp />, document.getElementById('root'));
