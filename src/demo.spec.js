@@ -1,31 +1,10 @@
-import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 
-import { rest } from 'msw';
-import { setupServer } from 'msw/node';
+import { ReactQueryApp } from './react-query';
 
-import { App } from './index.jsx';
-
-const server = setupServer(
-    rest.get('http://localhost:3000/items', async (req, res, ctx) => {
-        const params = req.url.searchParams;
-
-        const id = params.get('id');
-        if (id) {
-            return res(ctx.json({ id: id }));
-        }
-
-        return res(ctx.json([{ id: 1 }]));
-    }),
-);
-
-beforeAll(() => server.listen());
-afterEach(() => server.resetHandlers());
-afterAll(() => server.close());
-
-describe('asdad', () => {
-    test('23123', async () => {
-        render(<App />);
+describe('Async component', () => {
+    test('Fetches some data', async () => {
+        render(<ReactQueryApp />);
 
         const el = await waitFor(() => screen.findByTestId('2'));
 
