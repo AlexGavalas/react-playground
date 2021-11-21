@@ -1,12 +1,12 @@
 {
     "name": "playground",
-    "version": "1.6.1",
-    "engines": {
-        "node": "14"
-    },
+    "version": "0.0.0",
     "scripts": {
         "clean": "rm -rf dist .cache",
         "start": "vite",
+        "build:vite": "vite build --outDir ./vite-build",
+        "start:webpack": "webpack serve --config webpack.config.dev",
+        "build:webpack": "NODE_ENV=production webpack build --config webpack.config.prod --progress",
         "server": "json-server --watch ./src/db.json --delay 1000",
         "release": "HUSKY_SKIP_HOOKS=1 standard-version",
         "lint": "eslint .",
@@ -36,16 +36,21 @@
         "@babel/core": "7.14.6",
         "@reduxjs/toolkit": "1.6.2",
         "babel-eslint": "10.1.0",
+        "babel-loader": "8.2.3",
         "commitizen": "4.2.4",
         "cz-conventional-changelog": "3.3.0",
         "eslint": "7.31.0",
         "eslint-plugin-react": "7.24.0",
+        "html-webpack-plugin": "5.5.0",
         "husky": "7.0.1",
         "json-server": "0.16.3",
         "parcel": "2.0.0",
         "react-redux": "7.2.5",
         "standard-changelog": "2.0.27",
-        "standard-version": "9.3.1"
+        "standard-version": "9.3.1",
+        "webpack": "5.64.2",
+        "webpack-cli": "4.9.1",
+        "webpack-dev-server": "4.5.0"
     },
     "husky": {
         "hooks": {
@@ -56,8 +61,5 @@
         "commitizen": {
             "path": "./node_modules/cz-conventional-changelog"
         }
-    },
-    "browserslist": [
-        "last 1 Chrome version"
-    ]
+    }
 }
