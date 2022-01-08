@@ -1,6 +1,6 @@
-const { Observable, of } = require('rxjs');
+import { Observable, of } from 'rxjs';
 
-const double = (source) =>
+const double = (source: Observable<number>) =>
     new Observable((subscriber) => {
         const subscription = source.subscribe({
             next: (value) => subscriber.next(2 * value),
