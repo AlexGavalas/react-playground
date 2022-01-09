@@ -1,8 +1,10 @@
+import { FC } from 'react';
 import { render } from 'react-dom';
 
 import { LineChart } from './charts/line';
 import { TimeSeries } from './charts/time-series';
-import { Histogram } from './charts/histogram';
+import { BarChart } from './charts/bars';
+import { LinesChart } from './charts/lines';
 
 import './index.css';
 
@@ -15,14 +17,15 @@ const styles = {
     padding: '2rem',
 };
 
-const CenterLayout = ({ children }) => <div style={styles}>{children}</div>;
+const CenterLayout: FC = ({ children }) => <div style={styles}>{children}</div>;
 
 const App = () => {
     return (
         <CenterLayout>
             <LineChart />
             <TimeSeries />
-            <Histogram />
+            <LinesChart />
+            <BarChart />
         </CenterLayout>
     );
 };
