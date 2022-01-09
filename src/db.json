@@ -1,19 +1,30 @@
 {
-    "items": [
-        {
-            "id": 1,
-            "title": "json-server-1",
-            "author": "typicode"
-        },
-        {
-            "id": 2,
-            "title": "json-server-2",
-            "author": "typicode"
-        },
-        {
-            "id": 3,
-            "title": "json-server-3",
-            "author": "typicode"
-        }
-    ]
+  "items": [
+    {
+      "id": 1,
+      "title": "json-server-1",
+      "author": "typicode"
+    },
+    {
+      "id": 2,
+      "title": "json-server-2",
+      "author": "typicode"
+    },
+    {
+      "id": 3,
+      "title": "json-server-3",
+      "author": "typicode"
+    }
+  ],
+  "images": [
+    {
+      "id": 1
+    },
+    {
+      "id": 2
+    },
+    {
+      "id": 3
+    }
+  ]
 }

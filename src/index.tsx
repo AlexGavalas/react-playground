@@ -1,10 +1,7 @@
 import { FC } from 'react';
 import { render } from 'react-dom';
 
-import { LineChart } from './charts/line';
-import { TimeSeries } from './charts/time-series';
-import { BarChart } from './charts/bars';
-import { LinesChart } from './charts/lines';
+import Form from './form-upload';
 
 import './index.css';
 
@@ -22,10 +19,7 @@ const CenterLayout: FC = ({ children }) => <div style={styles}>{children}</div>;
 const App = () => {
     return (
         <CenterLayout>
-            <LineChart />
-            <TimeSeries />
-            <LinesChart />
-            <BarChart />
+            <Form />
         </CenterLayout>
     );
 };
