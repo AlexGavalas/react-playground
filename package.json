@@ -28,6 +28,7 @@
         "vite": "2.7.10"
     },
     "devDependencies": {
+        "@codesandbox/sandpack-react": "0.10.12",
         "@emotion/react": "11.7.1",
         "@emotion/styled": "11.6.0",
         "@mui/icons-material": "5.2.5",

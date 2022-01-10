@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { render } from 'react-dom';
 
-import Form from './form-upload';
+import { LineChart } from './charts/line';
 
 import './index.css';
 
@@ -19,7 +19,7 @@ const CenterLayout: FC = ({ children }) => <div style={styles}>{children}</div>;
 const App = () => {
     return (
         <CenterLayout>
-            <Form />
+            <LineChart />
         </CenterLayout>
     );
 };
