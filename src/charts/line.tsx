@@ -10,9 +10,9 @@ type Data = {
 
 const MARGIN = {
     top: 10,
-    right: 10,
+    right: 1,
     bottom: 10,
-    left: 20,
+    left: 0,
 };
 
 export const LineChart = () => {
@@ -27,7 +27,7 @@ export const LineChart = () => {
     const generateData = () => {
         const chartData = [...Array(20)].map((_, i) => ({
             label: i,
-            value: Math.floor(Math.random() * i * 3),
+            value: Math.floor(Math.random() * i * 3) * 10,
         }));
 
         setData(chartData);
@@ -40,7 +40,19 @@ export const LineChart = () => {
 
         if (!titleRef.current) return;
 
-        const INNER_WIDTH = width - MARGIN.left - MARGIN.right;
+        // START Find yaxis labels width
+        let maxw = 0;
+
+        d3.select(container.current)
+            .append('svg')
+            .call(d3.axisLeft(d3.scaleLinear().domain([0, yMaxVal])))
+            .each(function () {
+                maxw = this.getBBox().width;
+            })
+            .remove();
+        // END Find yaxis labels width
+
+        const INNER_WIDTH = width - MARGIN.left - MARGIN.right - maxw;
 
         const INNER_HEIGHT =
             height - MARGIN.top - MARGIN.bottom - titleRef.current.offsetHeight;
@@ -51,7 +63,10 @@ export const LineChart = () => {
             .attr('width', '100%')
             .attr('height', '100%')
             .append('g')
-            .attr('transform', `translate(${MARGIN.left}, ${MARGIN.top})`);
+            .attr(
+                'transform',
+                `translate(${MARGIN.left + maxw}, ${MARGIN.top})`,
+            );
 
         // x-axis scale
         const xScale = d3
@@ -93,7 +108,10 @@ export const LineChart = () => {
             .call(d3.axisBottom(xScale));
 
         // y-axis
-        svg.append('g').attr('class', 'y-axis').call(d3.axisLeft(yScale));
+        svg.append('g')
+            .attr('class', 'y-axis')
+            .attr('id', 'yaxis')
+            .call(d3.axisLeft(yScale));
 
         // line
         const line = d3
@@ -110,6 +128,49 @@ export const LineChart = () => {
             .attr('stroke-width', 3)
             .attr('class', 'line')
             .attr('d', line);
+
+        // Tooltip
+        const Tooltip = d3
+            .select(container.current)
+            .append('div')
+            .style('opacity', 0)
+            .attr('class', 'tooltip')
+            .style('background-color', 'white')
+            .style('border', 'solid')
+            .style('border-width', '2px')
+            .style('border-radius', '5px')
+            .style('padding', '5px');
+
+        const mouseover = function () {
+            Tooltip.style('opacity', 1);
+        };
+
+        const mousemove = function (d: MouseEvent) {
+            const val = xScale.invert(d.x);
+
+            const idx = d3.bisector((d: Data) => d.label).left(data, val);
+
+            const v = data[idx - 1];
+
+            Tooltip.html(
+                'The exact value of<br>this cell is: ' +
+                    v.value +
+                    ' ' +
+                    v.label,
+            )
+                .style('position', 'absolute')
+                .style('left', `${d.x}px`)
+                .style('top', `${d.y}px`);
+        };
+
+        const mouseleave = function () {
+            Tooltip.style('opacity', 0);
+        };
+
+        d3.select(container.current)
+            .on('mouseover', mouseover)
+            .on('mousemove', mousemove)
+            .on('mouseleave', mouseleave);
     };
 
     useEffect(() => {
