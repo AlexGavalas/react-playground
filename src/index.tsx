@@ -1,14 +1,19 @@
 import { FC } from 'react';
-import { render } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 
-import { LineChart } from './charts/line';
+import {
+    QueryClient,
+    QueryClientProvider,
+    useMutation,
+    useQuery,
+    useQueryClient,
+} from 'react-query';
 
 import './index.css';
 
 const styles = {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, 1fr)',
-    gridAutoRows: 'minmax(0, 1fr)',
+    placeContent: 'center',
     gap: '5rem',
     height: '100%',
     padding: '2rem',
@@ -16,12 +21,77 @@ const styles = {
 
 const CenterLayout: FC = ({ children }) => <div style={styles}>{children}</div>;
 
+const useCustomHook = () => {
+    const queryClient = useQueryClient();
+
+    const { data, isFetching } = useQuery(
+        ['test'],
+        () => {
+            console.log('running');
+
+            return fetch('https://jsonplaceholder.typicode.com/posts/1').then(
+                (res) => res.json(),
+            );
+        },
+        {
+            onSuccess: () => {
+                console.log('success');
+            },
+        },
+    );
+
+    const { mutate, isLoading } = useMutation(
+        ({ title }: { title: string }) => {
+            return fetch('https://jsonplaceholder.typicode.com/posts', {
+                method: 'POST',
+                body: JSON.stringify({
+                    title,
+                    body: 'bar',
+                    userId: 1,
+                }),
+                headers: {
+                    'Content-type': 'application/json',
+                },
+            }).then((res) => res.json());
+        },
+        {
+            onSuccess: () => {
+                queryClient.refetchQueries(['test']);
+            },
+        },
+    );
+
+    return { isFetching, data, mutate, isLoading };
+};
+
 const App = () => {
+    const { mutate, isLoading } = useCustomHook();
+
     return (
         <CenterLayout>
-            <LineChart />
+            <button onClick={() => mutate({ title: 'Hey' })}>
+                {isLoading ? 'Creating...' : 'Create'}
+            </button>
         </CenterLayout>
     );
 };
 
-render(<App />, document.getElementById('root'));
+const container = document.getElementById('root');
+
+if (!container) throw new Error('Could not find root element');
+
+const root = createRoot(container);
+
+const queryClient = new QueryClient({
+    defaultOptions: {
+        queries: {
+            refetchOnWindowFocus: false,
+        },
+    },
+});
+
+root.render(
+    <QueryClientProvider client={queryClient}>
+        <App />
+    </QueryClientProvider>,
+);
