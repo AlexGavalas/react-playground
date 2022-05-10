@@ -1,32 +1,39 @@
-import { RefObject, useState, useEffect } from 'react';
+import { useState, useRef, useLayoutEffect, useCallback } from 'react';
 
-export const useElementSize = (elementRef: RefObject<HTMLDivElement>) => {
-    const [elementSize, setElementSize] = useState<{
-        width?: number;
-        height?: number;
-    }>({
-        width: undefined,
-        height: undefined,
+export const useElementSize = <Element extends HTMLElement>() => {
+    const [size, setSize] = useState({
+        height: 0,
+        width: 0,
     });
 
-    useEffect(() => {
-        const handleResize = () => {
-            if (!elementRef.current) return;
+    const ref = useRef<Element>(null);
 
-            const { offsetWidth: width, offsetHeight: height } =
-                elementRef.current;
+    const onResize = useCallback(() => {
+        if (!ref.current) return;
 
-            setElementSize({ width, height });
-        };
+        const newHeight = ref.current.offsetHeight;
+        const newWidth = ref.current.offsetWidth;
 
-        window?.addEventListener('resize', handleResize);
+        if (newHeight !== size.height || newWidth !== size.width) {
+            setSize({
+                height: newHeight,
+                width: newWidth,
+            });
+        }
+    }, [size.height, size.width]);
 
-        handleResize();
+    useLayoutEffect(() => {
+        if (!ref.current) return;
 
-        return () => {
-            window?.removeEventListener('resize', handleResize);
-        };
-    }, [elementRef]);
+        const resizeObserver = new ResizeObserver(onResize);
 
-    return elementSize;
+        resizeObserver.observe(ref.current);
+
+        return () => resizeObserver.disconnect();
+    }, [ref, onResize]);
+
+    return {
+        ref,
+        ...size,
+    };
 };
