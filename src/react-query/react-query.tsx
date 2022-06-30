@@ -2,22 +2,20 @@ import { useState } from 'react';
 import { useQuery, QueryClient, QueryClientProvider } from 'react-query';
 import axios from 'axios';
 
-const select = ({ data }) => data;
-
 export const Content = () => {
     const [count, setCount] = useState(0);
 
     const { data = [] } = useQuery(
         'items',
         () => axios.get('http://localhost:3000/items'),
-        { select },
+        { select: ({ data }) => data },
     );
 
     const { data: item } = useQuery(
         'items 2',
         () => axios.get(`http://localhost:3000/items?id=${data[0].id}`),
         {
-            select,
+            select: ({ data }) => data,
             enabled: !!data.length,
         },
     );

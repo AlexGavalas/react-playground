@@ -3,7 +3,13 @@ import { ApiProvider } from '@reduxjs/toolkit/query/react';
 
 import { itemsAPI } from './redux-store';
 
-const Item = ({ item }) => {
+interface Item {
+    id: number;
+    author: string;
+    title: string;
+}
+
+const Item = ({ item }: { item: Item }) => {
     const [t, setT] = useState(item.title);
     const [updateOne] = itemsAPI.useUpdateOneMutation();
 
@@ -18,9 +24,15 @@ const Item = ({ item }) => {
 };
 
 const RTKAppDemo = () => {
-    const { data: items = [] } = itemsAPI.useGetAllQuery();
+    const { data: items = [] } = itemsAPI.useGetAllQuery(null);
 
-    return items.map((item) => <Item item={item} key={item.id} />);
+    return (
+        <>
+            {items.map((item) => (
+                <Item item={item} key={item.id} />
+            ))}
+        </>
+    );
 };
 
 export const RTKApp = () => (

@@ -1,17 +1,5 @@
 import { observable, computed, action } from 'mobx';
-import { toStream } from 'mobx-utils';
-import { from } from 'rxjs';
-import { ajax } from 'rxjs/ajax';
-import { pluck, takeUntil, tap } from 'rxjs/operators';
-
-const makeRequest = ({ url, onSuccess, cancelStream$, onCancel, onError }) => {
-    ajax.get(url)
-        .pipe(
-            pluck('response'),
-            takeUntil(from(cancelStream$).pipe(onCancel())),
-        )
-        .subscribe(onSuccess, onError, () => console.log('Done'));
-};
+import axios from 'axios';
 
 class State1 {
     @observable statevar = 1;
@@ -40,9 +28,10 @@ export class State {
 
 export default class Counter {
     @observable counter = 0;
-    @observable repos = [];
+    @observable repos: number[] = [];
     @observable loading = false;
     @observable cancelled = false;
+    @observable abortController = new AbortController();
 
     @computed get reposCount() {
         return this.repos.length;
@@ -56,7 +45,7 @@ export default class Counter {
         return this.loading;
     }
 
-    @action setLoadingState(state) {
+    @action setLoadingState(state: boolean) {
         this.loading = state;
     }
 
@@ -66,44 +55,35 @@ export default class Counter {
 
     @action cancelRequest() {
         if (this.loading) {
-            this.cancelled = true;
+            this.abortController.abort();
         }
     }
 
     @action initCancel() {
-        this.cancelled = false;
+        this.abortController = new AbortController();
     }
 
-    @action searchRepos() {
+    @action async searchRepos() {
         if (this.loading) return;
 
         this.setLoadingState(true);
 
         const url = 'http://localhost:3000/items';
 
-        const cancelStream$ = toStream(() => this.cancelled);
-
-        const onCancel = () => {
-            return tap(() => {
-                this.setLoadingState(false);
-                this.initCancel();
+        try {
+            const { data } = await axios.get(url, {
+                signal: this.abortController.signal,
             });
-        };
 
-        const onSuccess = (data) => {
             this.setRepos(data);
-            this.setLoadingState(false);
-        };
-
-        const onError = () => {
-            this.setLoadingState(false);
+        } catch (e) {
             this.setRepos([1]);
-        };
-
-        makeRequest({ url, onSuccess, cancelStream$, onCancel, onError });
+        } finally {
+            this.setLoadingState(false);
+        }
     }
 
-    @action.bound setRepos(repos) {
+    @action.bound setRepos(repos: number[]) {
         this.repos = repos;
     }
 }
