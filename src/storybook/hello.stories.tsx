@@ -1,8 +1,6 @@
 import type { ComponentMeta, ComponentStory } from '@storybook/react';
 
-const DemoComponent = ({ text }: { text?: string }) => {
-    return <div>Hey Storybook {text}</div>;
-};
+import { DemoComponent } from './demo';
 
 const config: ComponentMeta<typeof DemoComponent> = {
     title: 'Demo',
