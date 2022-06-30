@@ -84,7 +84,7 @@ const Form = () => {
 
         formValues.image && formData.append('image', formValues.image);
 
-        return await uploadForm(formData);
+        await uploadForm(formData);
     };
 
     return (

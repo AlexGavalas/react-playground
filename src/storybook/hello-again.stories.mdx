@@ -1,0 +1,35 @@
+import { Meta, Story, Canvas } from '@storybook/addon-docs';
+
+import { DemoComponent } from './demo.tsx';
+
+<Meta title="Demo in MDX" component={DemoComponent} />
+
+export const Template = (args) => <DemoComponent {...args} />;
+
+# Stories in MDX ??
+
+Yes it can be done now.
+
+<Story
+    name="With initial text"
+    args={{
+        text: ' from MDX',
+    }}
+>
+    {Template.bind({})}
+</Story>
+
+---
+
+#### You can also check and copy the code
+
+<Canvas>
+    <Story
+        name="With code"
+        args={{
+            text: ' from MDX',
+        }}
+    >
+        {Template.bind({})}
+    </Story>
+</Canvas>

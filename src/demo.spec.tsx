@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react';
 
-import { ReactQueryApp } from './react-query';
+import { ReactQueryApp } from './react-query/react-query';
 
 describe('Async component', () => {
     test('Fetches some data', async () => {

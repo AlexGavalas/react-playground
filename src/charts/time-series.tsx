@@ -14,16 +14,12 @@ export const TimeSeries = () => {
 
         const formatTime = d3.timeParse('%Y-%m-%d');
 
-        await d3.csv(
-            CSV_URL,
-            () => {},
-            (row) => {
-                csvData.push({
-                    date: formatTime(row.date),
-                    value: parseFloat(row.value),
-                });
-            },
-        );
+        await d3.csv(CSV_URL, {}, (row) => {
+            csvData.push({
+                date: formatTime(row.date),
+                value: parseFloat(row.value),
+            });
+        });
 
         setData(csvData);
     };

@@ -79,7 +79,7 @@ export default class Counter {
 
         this.setLoadingState(true);
 
-        const url = `http://localhost:3000/items`;
+        const url = 'http://localhost:3000/items';
 
         const cancelStream$ = toStream(() => this.cancelled);
 

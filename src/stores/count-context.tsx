@@ -1,8 +1,13 @@
-import { createContext, useState, useContext } from 'react';
+import { ReactNode, FC, createContext, useState, useContext } from 'react';
 
-const CounterContext = createContext();
+interface ContextI {
+    count: number;
+    inc: () => void;
+}
 
-export const CounterProvider = ({ children }) => {
+const CounterContext = createContext<ContextI | null>(null);
+
+export const CounterProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const [count, setCount] = useState(0);
 
     const providerValue = {

@@ -60,4 +60,4 @@ class HoudiniSnow {
     }
 }
 
-registerPaint(WORKLET, HoudiniSnow);
+window.registerPaint(WORKLET, HoudiniSnow);

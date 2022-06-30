@@ -48,14 +48,14 @@ const useCustomHook = () => {
 };
 
 export const App = () => {
-    // const { data, mutate, isLoading } = useCustomHook();
+    const { data, mutate, isLoading } = useCustomHook();
 
     return (
         <CenterLayout>
-            {/* <button onClick={() => mutate({ title: 'Hey' })}>
+            <button onClick={() => mutate({ title: 'Hey' })}>
                 {isLoading ? 'Creating...' : 'Create'}
                 {JSON.stringify(data)}
-            </button> */}
+            </button>
         </CenterLayout>
     );
 };
