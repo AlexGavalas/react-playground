@@ -12,6 +12,7 @@ const styles = {
     padding: '2rem',
 };
 
+// TODO: Remove this
 const CenterLayout = ({ children }: { children?: ReactNode }) => (
     <div style={styles}>{children}</div>
 );
