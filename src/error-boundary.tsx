@@ -17,7 +17,7 @@ export class ErrorBoundary extends Component<{ children?: ReactNode }> {
                 <div>
                     <h1>Oops</h1>
                     <button onClick={() => this.setState({ hasError: false })}>
-                        Reload
+                        Reload #2
                     </button>
                 </div>
             );
