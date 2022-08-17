@@ -1,5 +1,7 @@
 import { ReactNode } from 'react';
 
+import { App as DemoApp } from './react-router';
+
 import './index.css';
 
 const styles = {
@@ -16,5 +18,9 @@ const CenterLayout = ({ children }: { children?: ReactNode }) => (
 );
 
 export const App = () => {
-    return <CenterLayout>Hey</CenterLayout>;
+    return (
+        <CenterLayout>
+            <DemoApp />
+        </CenterLayout>
+    );
 };
